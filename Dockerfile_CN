@@ -1,5 +1,5 @@
 # build front-end
-FROM node:18-alpine AS frontend
+FROM node:lts-alpine AS frontend
 
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
 
@@ -26,6 +26,14 @@ RUN npm run build
 # build backend
 FROM node:lts-alpine as backend
 
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+
+RUN yarn config set registry 'https://registry.npmmirror.com/'
+
+RUN yarn config delete proxy
+
+RUN npm config set registry 'https://registry.npmmirror.com'
+
 RUN npm install npm -g
 
 WORKDIR /app
@@ -42,6 +50,14 @@ RUN npm build
 
 # service
 FROM node:lts-alpine
+
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories
+
+RUN yarn config set registry 'https://registry.npmmirror.com/'
+
+RUN yarn config delete proxy
+
+RUN npm config set registry 'https://registry.npmmirror.com'
 
 RUN npm install npm -g
 
